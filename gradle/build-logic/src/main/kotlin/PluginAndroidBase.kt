@@ -25,7 +25,7 @@ class PluginAndroidBase : Plugin<Project> {
                     targetSdk = mihonx.versions.android.sdk.target.get().toInt()
                 }
 
-                ndkVersion = mihonx.versions.android.ndk.get()
+                // ndkVersion = mihonx.versions.android.ndk.get()
             }
 
             compileSdk = mihonx.versions.android.sdk.compile.get().toInt()

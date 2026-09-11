@@ -45,6 +45,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    val localDebugKeystore = rootProject.file("debug.keystore")
     if (System.getenv("MIHON_GITHUB_RELEASE").toBoolean()) {
         val tempStoreFile = file(System.getenv("RUNNER_TEMP")).resolve("antsy.keystore")
 
@@ -68,6 +69,15 @@ android {
                 storePassword = keystoreProperties.getProperty("storePassword")
                 keyAlias = keystoreProperties.getProperty("keyAlias")
                 keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    } else if (localDebugKeystore.exists()) {
+        signingConfigs {
+            named("debug") {
+                storeFile = localDebugKeystore
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
             }
         }
     }
