@@ -65,6 +65,8 @@ import eu.kanade.tachiyomi.ui.main.MainActivity
 import eu.kanade.tachiyomi.ui.reader.ReaderViewModel.SetAsCoverResult.AddToLibraryFirst
 import eu.kanade.tachiyomi.ui.reader.ReaderViewModel.SetAsCoverResult.Error
 import eu.kanade.tachiyomi.ui.reader.ReaderViewModel.SetAsCoverResult.Success
+import eu.kanade.tachiyomi.ui.reader.bubblezoom.BubbleZoomManager
+import eu.kanade.tachiyomi.ui.reader.bubblezoom.ui.BubbleZoomOverlay
 import eu.kanade.tachiyomi.ui.reader.model.ReaderChapter
 import eu.kanade.tachiyomi.ui.reader.model.ReaderPage
 import eu.kanade.tachiyomi.ui.reader.model.ViewerChapters
@@ -140,6 +142,8 @@ class ReaderActivity : BaseActivity() {
 
     var isScrollingThroughPages = false
         private set
+
+    val bubbleZoomManager by lazy { BubbleZoomManager(readerPreferences) }
 
     /**
      * Called when the activity is created. Initializes the presenter and configuration.
@@ -271,6 +275,8 @@ class ReaderActivity : BaseActivity() {
 
             ContentOverlay(state = state)
 
+            BubbleZoomOverlay(manager = bubbleZoomManager)
+
             AppBars(state = state)
         }
 
@@ -338,6 +344,7 @@ class ReaderActivity : BaseActivity() {
      */
     override fun onDestroy() {
         super.onDestroy()
+        bubbleZoomManager.clear()
         viewModel.state.value.viewer?.destroy()
         config = null
         menuToggleToast?.cancel()
@@ -411,6 +418,25 @@ class ReaderActivity : BaseActivity() {
      * Dispatches a key event. If the viewer doesn't handle it, call the default implementation.
      */
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (bubbleZoomManager.activeBubbleIndex.value != null) {
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                when (event.keyCode) {
+                    KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                        bubbleZoomManager.nextBubble()
+                        return true
+                    }
+                    KeyEvent.KEYCODE_VOLUME_UP -> {
+                        bubbleZoomManager.previousBubble()
+                        return true
+                    }
+                    KeyEvent.KEYCODE_BACK -> {
+                        bubbleZoomManager.closeZoom()
+                        return true
+                    }
+                }
+            }
+        }
+
         val handled = viewModel.state.value.viewer?.handleKeyEvent(event) ?: false
         return handled || super.dispatchKeyEvent(event)
     }
@@ -518,6 +544,14 @@ class ReaderActivity : BaseActivity() {
                 menuToggleToast = toast(if (enabled) MR.strings.on else MR.strings.off)
             },
             onClickSettings = viewModel::openSettingsDialog,
+            bubbleZoomActive = bubbleZoomManager.activeBubbleIndex.collectAsState().value != null,
+            onClickBubbleZoom = {
+                if (bubbleZoomManager.activeBubbleIndex.value != null) {
+                    bubbleZoomManager.closeZoom()
+                } else {
+                    bubbleZoomManager.startBubbleZoom()
+                }
+            },
         )
     }
 
@@ -691,6 +725,8 @@ class ReaderActivity : BaseActivity() {
      */
     fun onPageSelected(page: ReaderPage) {
         viewModel.onPageSelected(page)
+        val isRtl = viewModel.state.value.viewer is R2LPagerViewer
+        bubbleZoomManager.onPageSelected(page, isRtl)
     }
 
     /**

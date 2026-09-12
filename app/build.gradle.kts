@@ -294,6 +294,9 @@ dependencies {
     // Preferences
     implementation(libs.androidx.preference)
 
+    // ML Kit for Bubble Zoom speech bubble detection
+    implementation(libs.mlkit.text.recognition)
+
     // Dependency injection
     implementation(libs.injekt)
     implementation(libs.metro.runtime)

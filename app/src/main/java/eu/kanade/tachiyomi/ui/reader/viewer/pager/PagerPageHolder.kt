@@ -253,6 +253,8 @@ class PagerPageHolder(
     override fun onImageLoaded() {
         super.onImageLoaded()
         progressIndicator?.hide()
+        val isRtl = viewer is R2LPagerViewer
+        viewer.activity.bubbleZoomManager.onPageSelected(page, isRtl)
     }
 
     /**

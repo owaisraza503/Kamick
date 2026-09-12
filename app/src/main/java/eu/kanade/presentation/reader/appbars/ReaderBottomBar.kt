@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,8 @@ fun ReaderBottomBar(
     onClickCropBorder: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    bubbleZoomActive: Boolean = false,
+    onClickBubbleZoom: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -53,6 +56,16 @@ fun ReaderBottomBar(
                 painter = painterResource(if (cropEnabled) R.drawable.ic_crop_24dp else R.drawable.ic_crop_off_24dp),
                 contentDescription = stringResource(MR.strings.pref_crop_borders),
             )
+        }
+
+        if (onClickBubbleZoom != null) {
+            IconButton(onClick = onClickBubbleZoom) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_bubble_zoom_24dp),
+                    contentDescription = "Bubble Zoom",
+                    tint = if (bubbleZoomActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
 
         IconButton(onClick = onClickSettings) {

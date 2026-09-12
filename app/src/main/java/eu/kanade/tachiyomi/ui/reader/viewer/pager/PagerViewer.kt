@@ -111,12 +111,15 @@ abstract class PagerViewer(val activity: ReaderActivity) : Viewer {
                 (event.rawX - viewPosition[0] + viewPositionRelativeToWindow[0]) / pager.width,
                 (event.rawY - viewPosition[1] + viewPositionRelativeToWindow[1]) / pager.height,
             )
-            when (config.navigator.getAction(pos)) {
-                NavigationRegion.MENU -> activity.toggleMenu()
-                NavigationRegion.NEXT -> moveToNext()
-                NavigationRegion.PREV -> moveToPrevious()
-                NavigationRegion.RIGHT -> moveRight()
-                NavigationRegion.LEFT -> moveLeft()
+            val handled = activity.bubbleZoomManager.onTap(pos.x, pos.y)
+            if (!handled) {
+                when (config.navigator.getAction(pos)) {
+                    NavigationRegion.MENU -> activity.toggleMenu()
+                    NavigationRegion.NEXT -> moveToNext()
+                    NavigationRegion.PREV -> moveToPrevious()
+                    NavigationRegion.RIGHT -> moveRight()
+                    NavigationRegion.LEFT -> moveLeft()
+                }
             }
         }
         pager.longTapListener = f@{

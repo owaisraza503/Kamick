@@ -133,6 +133,29 @@ internal fun ColumnScope.GeneralPage(viewModel: ReaderSettingsViewModel) {
     )
 
     CheckboxItem(
+        label = "Enable Bubble Zoom (ML speech bubble zoom)",
+        pref = viewModel.preferences.enableBubbleZoom,
+    )
+    val bubbleZoomEnabled by viewModel.preferences.enableBubbleZoom.collectAsState()
+    if (bubbleZoomEnabled) {
+        val bubbleZoomMagnificationPref = viewModel.preferences.bubbleZoomMagnification
+        val magnificationVal by bubbleZoomMagnificationPref.collectAsState()
+        SliderItem(
+            value = magnificationVal,
+            valueRange = 150..300,
+            steps = 5,
+            label = "Bubble Zoom magnification",
+            valueString = "${magnificationVal}%",
+            onChange = { bubbleZoomMagnificationPref.set(it) },
+            pillColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        )
+        CheckboxItem(
+            label = "Highlight detected speech bubbles",
+            pref = viewModel.preferences.highlightBubbleZoom,
+        )
+    }
+
+    CheckboxItem(
         label = stringResource(MR.strings.pref_flash_page),
         pref = viewModel.preferences.flashOnPageChange,
     )

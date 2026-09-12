@@ -89,6 +89,12 @@ class ReaderPreferences(
 
     val landscapeZoom: Preference<Boolean> = preferenceStore.getBoolean("landscape_zoom", true)
 
+    // region Bubble Zoom (Google Play Books style)
+    val enableBubbleZoom: Preference<Boolean> = preferenceStore.getBoolean("pref_reader_bubble_zoom", true)
+    val bubbleZoomMagnification: Preference<Int> = preferenceStore.getInt("pref_reader_bubble_zoom_magnification", 200)
+    val highlightBubbleZoom: Preference<Boolean> = preferenceStore.getBoolean("pref_reader_bubble_zoom_highlight", false)
+    // endregion
+
     val cropBordersWebtoon: Preference<Boolean> = preferenceStore.getBoolean("crop_borders_webtoon", false)
 
     val webtoonSidePadding: Preference<Int> = preferenceStore.getInt("webtoon_side_padding", WEBTOON_PADDING_MIN)
