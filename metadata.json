@@ -1,0 +1,6 @@
+{
+  "name": "Kamick",
+  "description": "Manga, comic, and webtoon reader with Tachiyomi extension support, multiple online sources, custom repositories, library management, and trackers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
